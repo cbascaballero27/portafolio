@@ -1,0 +1,30 @@
+{
+  "hero": {
+    "title": "Sebastian Caballero",
+    "subtitle": "Front End Developer"
+  },
+  "about": {
+    "title": "About Me",
+    "description": "Frontend Developer specialized in React and Angular, with experience in creating modern and scalable web applications. I'm passionate about combining design and functionality to build intuitive interfaces that provide an excellent user experience. Always seeking best practices and emerging technologies to deliver innovative solutions."
+  },
+  "projects": {
+    "title": "Selected Projects",
+    "viewProject": "View Project"
+  },
+  "skills": {
+    "title": "Skills"
+  },
+  "contact": {
+    "title": "Contact",
+    "subtitle": "Available for projects and collaborations",
+    "contactMe": "Contact Me",
+    "downloadCV": "Download CV",
+    "downloadStarted": "Download started!",
+    "downloadDescription": "Your resume is being downloaded."
+  },
+  "buttons": {
+    "contact": "Contact Me",
+    "download": "Download CV",
+    "viewProject": "View Project"
+  }
+} 

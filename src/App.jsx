@@ -1,14 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Toaster } from "@/components/ui/toaster";
 import { useToast } from "@/components/ui/use-toast";
-import { Github, Linkedin, Mail, ExternalLink, ArrowRight, X } from "lucide-react";
+import { Github, Linkedin, Mail, ExternalLink, ArrowRight, X, Sun, Moon, Globe } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { useTheme } from "@/components/theme-provider";
+import translations from "./locales/es.json";
+import translationsEn from "./locales/en.json";
 
 // Animación de entrada suave para elementos
 const fadeIn = {
@@ -28,12 +31,41 @@ const staggerContainer = {
 
 export default function App() {
   const { toast } = useToast();
+  const { theme, setTheme } = useTheme();
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
+  const [language, setLanguage] = useState('es');
+  const [isLanguageTransitioning, setIsLanguageTransitioning] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     message: ''
   });
+
+  const t = language === 'es' ? translations : translationsEn;
+
+  const toggleTheme = () => {
+    setTheme(theme === 'dark' ? 'light' : 'dark');
+  };
+
+  const toggleLanguage = () => {
+    setIsLanguageTransitioning(true);
+    const newLanguage = language === 'es' ? 'en' : 'es';
+    
+    // Agregar clase de transición
+    document.body.classList.add('language-transition');
+    
+    // Cambiar el idioma después de un pequeño retraso
+    setTimeout(() => {
+      setLanguage(newLanguage);
+      localStorage.setItem('language', newLanguage);
+      
+      // Remover la clase de transición después de que se complete
+      setTimeout(() => {
+        document.body.classList.remove('language-transition');
+        setIsLanguageTransitioning(false);
+      }, 300);
+    }, 50);
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -100,9 +132,29 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className={`min-h-screen bg-background ${isLanguageTransitioning ? 'opacity-50' : 'opacity-100'}`}>
       <Toaster />
       
+      {/* Botones de tema y lenguaje */}
+      <div className="fixed top-4 right-4 flex gap-2 z-50">
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={toggleTheme}
+          className="rounded-full theme-transition"
+        >
+          {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+        </Button>
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={toggleLanguage}
+          className="rounded-full language-transition"
+        >
+          <Globe className="h-4 w-4" />
+        </Button>
+      </div>
+
       {/* Modal de Contacto */}
       {isContactModalOpen && (
         <motion.div
@@ -126,7 +178,7 @@ export default function App() {
                 transition={{ delay: 0.1 }}
                 className="text-2xl font-light bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent"
               >
-                Contáctame
+                {t.contactModal.title}
               </motion.h2>
               <motion.div
                 initial={{ opacity: 0, scale: 0.8 }}
@@ -151,14 +203,14 @@ export default function App() {
                 transition={{ delay: 0.2 }}
                 className="space-y-2"
               >
-                <Label htmlFor="name" className="text-sm font-medium">Nombre</Label>
+                <Label htmlFor="name" className="text-sm font-medium">{t.contactModal.nameLabel}</Label>
                 <Input
                   id="name"
                   name="name"
                   value={formData.name}
                   onChange={handleInputChange}
                   required
-                  placeholder="Tu nombre"
+                  placeholder={t.contactModal.namePlaceholder}
                   className="focus:ring-2 focus:ring-primary transition-all border-accent/20"
                 />
               </motion.div>
@@ -169,7 +221,7 @@ export default function App() {
                 transition={{ delay: 0.25 }}
                 className="space-y-2"
               >
-                <Label htmlFor="email" className="text-sm font-medium">Email</Label>
+                <Label htmlFor="email" className="text-sm font-medium">{t.contactModal.emailLabel}</Label>
                 <Input
                   id="email"
                   name="email"
@@ -177,7 +229,7 @@ export default function App() {
                   value={formData.email}
                   onChange={handleInputChange}
                   required
-                  placeholder="tu@email.com"
+                  placeholder={t.contactModal.emailPlaceholder}
                   className="focus:ring-2 focus:ring-primary transition-all border-accent/20"
                 />
               </motion.div>
@@ -188,14 +240,14 @@ export default function App() {
                 transition={{ delay: 0.3 }}
                 className="space-y-2"
               >
-                <Label htmlFor="message" className="text-sm font-medium">Mensaje</Label>
+                <Label htmlFor="message" className="text-sm font-medium">{t.contactModal.messageLabel}</Label>
                 <Textarea
                   id="message"
                   name="message"
                   value={formData.message}
                   onChange={handleInputChange}
                   required
-                  placeholder="¿En qué puedo ayudarte?"
+                  placeholder={t.contactModal.messagePlaceholder}
                   className="min-h-[120px] focus:ring-2 focus:ring-primary transition-all border-accent/20"
                 />
               </motion.div>
@@ -209,7 +261,7 @@ export default function App() {
                   type="submit" 
                   className="w-full hover:scale-[1.02] transition-transform bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70"
                 >
-                  Enviar Mensaje
+                  {t.contactModal.submitButton}
                 </Button>
               </motion.div>
             </form>
@@ -218,7 +270,7 @@ export default function App() {
       )}
 
       {/* Sección Hero - Presentación principal */}
-      <header className="container mx-auto px-4 py-16 relative">
+      <header className="container mx-auto px-4 py-16 relative language-transition">
         <motion.div
           initial="initial"
           animate="animate"
@@ -231,7 +283,7 @@ export default function App() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
           >
-            Sebastian Caballero
+            {t.hero.title}
           </motion.h1>
           <motion.p 
             className="text-lg text-muted-foreground mb-8 text-center"
@@ -239,7 +291,7 @@ export default function App() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.1 }}
           >
-            Desarrollador Front End
+            {t.hero.subtitle}
           </motion.p>
           <motion.div 
             className="flex justify-center gap-4"
@@ -253,7 +305,7 @@ export default function App() {
               size="lg" 
               className="group border-primary/20 hover:border-primary/40"
             >
-              Contáctame
+              {t.buttons.contact}
               <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Button>
             <Button 
@@ -262,7 +314,7 @@ export default function App() {
               size="lg" 
               className="group border-primary/20 hover:border-primary/40"
             >
-              Descargar CV
+              {t.buttons.download}
               <ExternalLink className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Button>
           </motion.div>
@@ -270,7 +322,7 @@ export default function App() {
       </header>
 
       {/* Sección About Me */}
-      <section className="container mx-auto px-4 py-12">
+      <section className="container mx-auto px-4 py-12 language-transition">
         <motion.div
           initial="initial"
           whileInView="animate"
@@ -285,7 +337,7 @@ export default function App() {
             viewport={{ once: true }}
             transition={{ duration: 0.4 }}
           >
-            Sobre Mí
+            {t.about.title}
           </motion.h2>
           <motion.p 
             className="text-muted-foreground leading-relaxed"
@@ -294,15 +346,13 @@ export default function App() {
             viewport={{ once: true }}
             transition={{ duration: 0.4, delay: 0.1 }}
           >
-            Desarrollador Frontend especializado en React y Angular, con experiencia en la creación de aplicaciones web modernas y escalables. 
-            Me apasiona combinar diseño y funcionalidad para construir interfaces intuitivas que ofrezcan una excelente experiencia de usuario. 
-            Siempre en busca de las mejores prácticas y tecnologías emergentes para ofrecer soluciones innovadoras.
+            {t.about.description}
           </motion.p>
         </motion.div>
       </section>
 
       {/* Sección de Proyectos */}
-      <section className="container mx-auto px-4 py-12">
+      <section className="container mx-auto px-4 py-12 language-transition">
         <motion.div
           initial="initial"
           whileInView="animate"
@@ -316,7 +366,7 @@ export default function App() {
             viewport={{ once: true }}
             transition={{ duration: 0.4 }}
           >
-            Proyectos Seleccionados
+            {t.projects.title}
           </motion.h2>
           <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
             {projects.map((project, index) => (
@@ -327,6 +377,25 @@ export default function App() {
                 transition={{ duration: 0.2 }}
               >
                 <Card className="border-0 shadow-none hover:bg-accent/50 transition-colors border border-accent/20 rounded-xl">
+                  {project.url && (
+                    <div className="relative group">
+                      <img 
+                        src={project.image} 
+                        alt={project.title}
+                        className="w-full h-48 object-cover rounded-t-xl"
+                      />
+                      <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                        <Button 
+                          variant="outline" 
+                          className="text-white border-white hover:bg-white/10"
+                          onClick={() => window.open(project.url, '_blank')}
+                        >
+                          {t.buttons.viewProject}
+                          <ExternalLink className="ml-2 h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  )}
                   <CardHeader>
                     <CardTitle className="text-xl font-light">{project.title}</CardTitle>
                     <CardDescription>{project.description}</CardDescription>
@@ -352,7 +421,7 @@ export default function App() {
       </section>
 
       {/* Sección de Habilidades */}
-      <section className="container mx-auto px-4 py-12">
+      <section className="container mx-auto px-4 py-12 language-transition">
         <motion.div
           initial="initial"
           whileInView="animate"
@@ -367,7 +436,7 @@ export default function App() {
             viewport={{ once: true }}
             transition={{ duration: 0.4 }}
           >
-            Habilidades
+            {t.skills.title}
           </motion.h2>
           <div className="grid md:grid-cols-4 gap-6">
             {skills.map((skill, index) => (
@@ -401,7 +470,7 @@ export default function App() {
             viewport={{ once: true }}
             transition={{ duration: 0.4 }}
           >
-            Contacto
+            {t.contact.title}
           </motion.h2>
           <motion.p 
             className="text-sm text-muted-foreground mb-6"
@@ -410,7 +479,7 @@ export default function App() {
             viewport={{ once: true }}
             transition={{ duration: 0.4, delay: 0.1 }}
           >
-            Disponible para proyectos y colaboraciones
+            {t.contact.subtitle}
           </motion.p>
           <motion.div 
             className="flex justify-center gap-4"
@@ -455,22 +524,30 @@ const projects = [
   {
     title: "E-commerce Platform",
     description: "Plataforma de comercio electrónico con carrito de compras y pagos integrados",
-    tags: ["React", "Node.js", "Stripe"]
+    tags: ["React", "Node.js", "Stripe"],
+    url: "https://ejemplo-ecommerce.com",
+    image: "https://via.placeholder.com/600x400"
   },
   {
     title: "Task Management App",
     description: "Aplicación de gestión de tareas con características colaborativas",
-    tags: ["React", "Firebase", "Tailwind"]
+    tags: ["React", "Firebase", "Tailwind"],
+    url: null,
+    image: "https://via.placeholder.com/600x400"
   },
   {
     title: "Portfolio Website",
     description: "Sitio web de portafolio personal con animaciones suaves",
-    tags: ["React", "Framer Motion", "Tailwind"]
+    tags: ["React", "Framer Motion", "Tailwind"],
+    url: "https://ejemplo-portfolio.com",
+    image: "https://via.placeholder.com/600x400"
   },
   {
     title: "Blog Platform",
     description: "Plataforma de blog con sistema de gestión de contenido",
-    tags: ["React", "GraphQL", "MDX"]
+    tags: ["React", "GraphQL", "MDX"],
+    url: null,
+    image: "https://via.placeholder.com/600x400"
   }
 ];
 

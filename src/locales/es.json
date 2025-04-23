@@ -1,0 +1,30 @@
+{
+  "hero": {
+    "title": "Sebastian Caballero",
+    "subtitle": "Desarrollador Front End"
+  },
+  "about": {
+    "title": "Sobre Mí",
+    "description": "Desarrollador Frontend especializado en React y Angular, con experiencia en la creación de aplicaciones web modernas y escalables. Me apasiona combinar diseño y funcionalidad para construir interfaces intuitivas que ofrezcan una excelente experiencia de usuario. Siempre en busca de las mejores prácticas y tecnologías emergentes para ofrecer soluciones innovadoras."
+  },
+  "projects": {
+    "title": "Proyectos Seleccionados",
+    "viewProject": "Ver Proyecto"
+  },
+  "skills": {
+    "title": "Habilidades"
+  },
+  "contact": {
+    "title": "Contacto",
+    "subtitle": "Disponible para proyectos y colaboraciones",
+    "contactMe": "Contáctame",
+    "downloadCV": "Descargar CV",
+    "downloadStarted": "¡Descarga iniciada!",
+    "downloadDescription": "Tu hoja de vida se está descargando."
+  },
+  "buttons": {
+    "contact": "Contáctame",
+    "download": "Descargar CV",
+    "viewProject": "Ver Proyecto"
+  }
+} 
