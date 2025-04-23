@@ -1,3 +1,8 @@
+/**
+ * Componente principal de la aplicación
+ * @component
+ * @description Aplicación de portafolio personal con soporte para temas claro/oscuro y múltiples idiomas
+ */
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -13,20 +18,102 @@ import { useTheme } from "@/components/theme-provider";
 import translations from "./locales/es.json";
 import translationsEn from "./locales/en.json";
 
-// Animación de entrada suave para elementos
-const fadeIn = {
-  initial: { opacity: 0, y: 10 },
-  animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.3 }
-};
+// Animaciones reutilizables
+const fadeIn = { initial: { opacity: 0, y: 10 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.3 } };
+const staggerContainer = { animate: { transition: { staggerChildren: 0.1 } } };
 
-// Animación escalonada para listas de elementos
-const staggerContainer = {
-  animate: {
-    transition: {
-      staggerChildren: 0.1
+/**
+ * Componente de Modal de Contacto
+ * @param {Object} props - Propiedades del modal
+ * @param {boolean} props.isOpen - Estado de apertura del modal
+ * @param {Function} props.onClose - Función para cerrar el modal
+ * @param {Object} props.translations - Traducciones para el modal
+ */
+const ContactModal = ({ isOpen, onClose, translations }) => {
+  const [formData, setFormData] = useState({ name: '', email: '', message: '' });
+  const { toast } = useToast();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch('https://formspree.io/f/your-form-id', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        toast({ title: "¡Mensaje enviado!", description: "Gracias por contactarme. Te responderé pronto." });
+        onClose();
+      } else throw new Error('Error al enviar el mensaje');
+    } catch (error) {
+      toast({ title: "Error", description: "Hubo un problema al enviar el mensaje. Por favor, inténtalo de nuevo.", variant: "destructive" });
     }
-  }
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.9 }}
+        transition={{ duration: 0.2 }}
+        className="bg-background p-8 rounded-xl shadow-2xl max-w-md w-full mx-4 border border-accent/20"
+      >
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-2xl font-light bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+            {translations.contactMe}
+          </h2>
+          <Button variant="ghost" size="icon" onClick={onClose} className="rounded-full hover:bg-accent/50">
+            <X className="h-4 w-4" />
+          </Button>
+        </div>
+        
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {[
+            { id: 'name', type: 'text', label: translations.nameLabel || "Nombre", placeholder: translations.namePlaceholder || "Tu nombre" },
+            { id: 'email', type: 'email', label: translations.emailLabel || "Email", placeholder: translations.emailPlaceholder || "tu@email.com" },
+            { id: 'message', type: 'textarea', label: translations.messageLabel || "Mensaje", placeholder: translations.messagePlaceholder || "¿En qué puedo ayudarte?" }
+          ].map((field) => (
+            <div key={field.id} className="space-y-2">
+              <Label htmlFor={field.id} className="text-sm font-medium">{field.label}</Label>
+              {field.type === 'textarea' ? (
+                <Textarea
+                  id={field.id}
+                  name={field.id}
+                  value={formData[field.id]}
+                  onChange={(e) => setFormData(prev => ({ ...prev, [field.id]: e.target.value }))}
+                  required
+                  placeholder={field.placeholder}
+                  className="min-h-[120px] focus:ring-2 focus:ring-primary transition-all border-accent/20"
+                />
+              ) : (
+                <Input
+                  id={field.id}
+                  name={field.id}
+                  type={field.type}
+                  value={formData[field.id]}
+                  onChange={(e) => setFormData(prev => ({ ...prev, [field.id]: e.target.value }))}
+                  required
+                  placeholder={field.placeholder}
+                  className="focus:ring-2 focus:ring-primary transition-all border-accent/20"
+                />
+              )}
+            </div>
+          ))}
+          
+          <Button 
+            type="submit" 
+            className="w-full hover:scale-[1.02] transition-transform bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70"
+          >
+            {translations.submitButton || "Enviar Mensaje"}
+          </Button>
+        </form>
+      </motion.div>
+    </div>
+  );
 };
 
 export default function App() {
@@ -79,6 +166,11 @@ export default function App() {
     setIsContactModalOpen(true);
   };
 
+  const handleCloseModal = () => {
+    setIsContactModalOpen(false);
+    setFormData({ name: '', email: '', message: '' });
+  };
+
   const handleDownloadCV = () => {
     // Crear un enlace temporal
     const link = document.createElement('a');
@@ -111,8 +203,7 @@ export default function App() {
           title: "¡Mensaje enviado!",
           description: "Gracias por contactarme. Te responderé pronto.",
         });
-        setIsContactModalOpen(false);
-        setFormData({ name: '', email: '', message: '' });
+        handleCloseModal();
       } else {
         throw new Error('Error al enviar el mensaje');
       }
@@ -155,119 +246,11 @@ export default function App() {
         </Button>
       </div>
 
-      {/* Modal de Contacto */}
-      {isContactModalOpen && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.2 }}
-          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 backdrop-blur-sm"
-        >
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            transition={{ duration: 0.2, ease: "easeOut" }}
-            className="bg-background/95 p-8 rounded-xl shadow-2xl max-w-md w-full mx-4 border border-accent/20"
-          >
-            <div className="flex justify-between items-center mb-8">
-              <motion.h2 
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.1 }}
-                className="text-2xl font-light bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent"
-              >
-                {t.contactModal.title}
-              </motion.h2>
-              <motion.div
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.15 }}
-              >
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setIsContactModalOpen(false)}
-                  className="rounded-full hover:bg-accent/50 transition-colors"
-                >
-                  <X className="h-4 w-4" />
-                </Button>
-              </motion.div>
-            </div>
-            
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <motion.div 
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                className="space-y-2"
-              >
-                <Label htmlFor="name" className="text-sm font-medium">{t.contactModal.nameLabel}</Label>
-                <Input
-                  id="name"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleInputChange}
-                  required
-                  placeholder={t.contactModal.namePlaceholder}
-                  className="focus:ring-2 focus:ring-primary transition-all border-accent/20"
-                />
-              </motion.div>
-              
-              <motion.div 
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.25 }}
-                className="space-y-2"
-              >
-                <Label htmlFor="email" className="text-sm font-medium">{t.contactModal.emailLabel}</Label>
-                <Input
-                  id="email"
-                  name="email"
-                  type="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  required
-                  placeholder={t.contactModal.emailPlaceholder}
-                  className="focus:ring-2 focus:ring-primary transition-all border-accent/20"
-                />
-              </motion.div>
-              
-              <motion.div 
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
-                className="space-y-2"
-              >
-                <Label htmlFor="message" className="text-sm font-medium">{t.contactModal.messageLabel}</Label>
-                <Textarea
-                  id="message"
-                  name="message"
-                  value={formData.message}
-                  onChange={handleInputChange}
-                  required
-                  placeholder={t.contactModal.messagePlaceholder}
-                  className="min-h-[120px] focus:ring-2 focus:ring-primary transition-all border-accent/20"
-                />
-              </motion.div>
-              
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.35 }}
-              >
-                <Button 
-                  type="submit" 
-                  className="w-full hover:scale-[1.02] transition-transform bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70"
-                >
-                  {t.contactModal.submitButton}
-                </Button>
-              </motion.div>
-            </form>
-          </motion.div>
-        </motion.div>
-      )}
+      <ContactModal 
+        isOpen={isContactModalOpen} 
+        onClose={handleCloseModal} 
+        translations={t.contact} 
+      />
 
       {/* Sección Hero - Presentación principal */}
       <header className="container mx-auto px-4 py-16 relative language-transition">
