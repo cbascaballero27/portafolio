@@ -305,131 +305,6 @@ export default function App() {
         </motion.div>
       </div>
 
-      {/* Botones de acción principales */}
-      <motion.div 
-        className="flex justify-center gap-4"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.2 }}
-      >
-        <motion.div
-          whileHover={buttonHover}
-          whileTap={{ scale: 0.95 }}
-        >
-          <Button 
-            onClick={handleContact} 
-            variant="outline" 
-            size="lg" 
-            className="group border-primary/20 hover:border-primary/40 hover:shadow-lg hover:shadow-primary/20 transition-all duration-300"
-          >
-            <span className="relative">
-              {t.buttons.contact}
-              <motion.span
-                className="absolute right-0"
-                initial={{ x: 0 }}
-                whileHover={{ x: 5 }}
-                transition={{ duration: 0.2 }}
-              >
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </motion.span>
-            </span>
-          </Button>
-        </motion.div>
-        <motion.div
-          whileHover={buttonHover}
-          whileTap={{ scale: 0.95 }}
-        >
-          <Button 
-            onClick={handleDownloadCV}
-            variant="outline" 
-            size="lg" 
-            className="group border-primary/20 hover:border-primary/40 hover:shadow-lg hover:shadow-primary/20 transition-all duration-300"
-          >
-            <span className="relative">
-              {t.buttons.download}
-              <motion.span
-                className="absolute right-0"
-                initial={{ x: 0 }}
-                whileHover={{ x: 5 }}
-                transition={{ duration: 0.2 }}
-              >
-                <ExternalLink className="ml-2 h-4 w-4" />
-              </motion.span>
-            </span>
-          </Button>
-        </motion.div>
-      </motion.div>
-
-      {/* Botones de redes sociales */}
-      <motion.div 
-        className="flex justify-center gap-4"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.3 }}
-      >
-        <motion.div
-          whileHover={buttonHover}
-          whileTap={{ scale: 0.95 }}
-        >
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            className="rounded-full hover:bg-accent/50 transition-colors border border-accent/20 hover:shadow-lg hover:shadow-primary/20"
-            onClick={() => window.open(socialLinks.github, '_blank')}
-          >
-            <motion.div
-              whileHover={{ rotate: 15 }}
-              transition={{ duration: 0.2 }}
-            >
-              <Github className="h-5 w-5" />
-            </motion.div>
-          </Button>
-        </motion.div>
-        <motion.div
-          whileHover={buttonHover}
-          whileTap={{ scale: 0.95 }}
-        >
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            className="rounded-full hover:bg-accent/50 transition-colors border border-accent/20 hover:shadow-lg hover:shadow-primary/20"
-            onClick={() => window.open(socialLinks.linkedin, '_blank')}
-          >
-            <motion.div
-              whileHover={{ rotate: 15 }}
-              transition={{ duration: 0.2 }}
-            >
-              <Linkedin className="h-5 w-5" />
-            </motion.div>
-          </Button>
-        </motion.div>
-        <motion.div
-          whileHover={buttonHover}
-          whileTap={{ scale: 0.95 }}
-        >
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            className="rounded-full hover:bg-accent/50 transition-colors border border-accent/20 hover:shadow-lg hover:shadow-primary/20"
-            onClick={() => window.open(socialLinks.email, '_blank')}
-          >
-            <motion.div
-              whileHover={{ rotate: 15 }}
-              transition={{ duration: 0.2 }}
-            >
-              <Mail className="h-5 w-5" />
-            </motion.div>
-          </Button>
-        </motion.div>
-      </motion.div>
-
-      {/* Modal de Contacto */}
-      <ContactModal 
-        isOpen={isContactModalOpen} 
-        onClose={handleCloseModal} 
-        translations={t.contact} 
-      />
-
       {/* Sección Hero - Presentación principal */}
       <header className="container mx-auto px-4 py-16 relative language-transition">
         <motion.div
@@ -460,27 +335,126 @@ export default function App() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.2 }}
           >
-            <Button 
-              onClick={handleContact} 
-              variant="outline" 
-              size="lg" 
-              className="group border-primary/20 hover:border-primary/40"
+            <motion.div
+              whileHover={buttonHover}
+              whileTap={{ scale: 0.95 }}
             >
-              {t.buttons.contact}
-              <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-            </Button>
-            <Button 
-              onClick={handleDownloadCV}
-              variant="outline" 
-              size="lg" 
-              className="group border-primary/20 hover:border-primary/40"
+              <Button 
+                onClick={handleContact} 
+                variant="outline" 
+                size="lg" 
+                className="group border-primary/20 hover:border-primary/40 hover:shadow-lg hover:shadow-primary/20 transition-all duration-300 px-6"
+              >
+                <span className="flex items-center gap-2">
+                  {t.buttons.contact}
+                  <motion.div
+                    initial={{ x: 0 }}
+                    whileHover={{ x: 5 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <ArrowRight className="h-4 w-4" />
+                  </motion.div>
+                </span>
+              </Button>
+            </motion.div>
+            <motion.div
+              whileHover={buttonHover}
+              whileTap={{ scale: 0.95 }}
             >
-              {t.buttons.download}
-              <ExternalLink className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-            </Button>
+              <Button 
+                onClick={handleDownloadCV}
+                variant="outline" 
+                size="lg" 
+                className="group border-primary/20 hover:border-primary/40 hover:shadow-lg hover:shadow-primary/20 transition-all duration-300 px-6"
+              >
+                <span className="flex items-center gap-2">
+                  {t.buttons.download}
+                  <motion.div
+                    initial={{ x: 0 }}
+                    whileHover={{ x: 5 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <ExternalLink className="h-4 w-4" />
+                  </motion.div>
+                </span>
+              </Button>
+            </motion.div>
           </motion.div>
         </motion.div>
       </header>
+
+      {/* Botones de redes sociales */}
+      <motion.div 
+        className="flex justify-center gap-4 mb-8"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.3 }}
+      >
+        <motion.div
+          whileHover={buttonHover}
+          whileTap={{ scale: 0.95 }}
+        >
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="rounded-full hover:bg-accent/50 transition-colors border border-accent/20 hover:shadow-lg hover:shadow-primary/20 w-10 h-10"
+            onClick={() => window.open(socialLinks.github, '_blank')}
+          >
+            <motion.div
+              whileHover={{ rotate: 15 }}
+              transition={{ duration: 0.2 }}
+              className="flex items-center justify-center"
+            >
+              <Github className="h-5 w-5" />
+            </motion.div>
+          </Button>
+        </motion.div>
+        <motion.div
+          whileHover={buttonHover}
+          whileTap={{ scale: 0.95 }}
+        >
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="rounded-full hover:bg-accent/50 transition-colors border border-accent/20 hover:shadow-lg hover:shadow-primary/20 w-10 h-10"
+            onClick={() => window.open(socialLinks.linkedin, '_blank')}
+          >
+            <motion.div
+              whileHover={{ rotate: 15 }}
+              transition={{ duration: 0.2 }}
+              className="flex items-center justify-center"
+            >
+              <Linkedin className="h-5 w-5" />
+            </motion.div>
+          </Button>
+        </motion.div>
+        <motion.div
+          whileHover={buttonHover}
+          whileTap={{ scale: 0.95 }}
+        >
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="rounded-full hover:bg-accent/50 transition-colors border border-accent/20 hover:shadow-lg hover:shadow-primary/20 w-10 h-10"
+            onClick={() => window.open(socialLinks.email, '_blank')}
+          >
+            <motion.div
+              whileHover={{ rotate: 15 }}
+              transition={{ duration: 0.2 }}
+              className="flex items-center justify-center"
+            >
+              <Mail className="h-5 w-5" />
+            </motion.div>
+          </Button>
+        </motion.div>
+      </motion.div>
+
+      {/* Modal de Contacto */}
+      <ContactModal 
+        isOpen={isContactModalOpen} 
+        onClose={handleCloseModal} 
+        translations={t.contact} 
+      />
 
       {/* Sección About Me */}
       <section className="container mx-auto px-4 py-12 language-transition">
@@ -649,30 +623,63 @@ export default function App() {
             viewport={{ once: true }}
             transition={{ duration: 0.4, delay: 0.2 }}
           >
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              className="rounded-full hover:bg-accent/50 transition-colors border border-accent/20"
-              onClick={() => window.open(socialLinks.github, '_blank')}
+            <motion.div
+              whileHover={buttonHover}
+              whileTap={{ scale: 0.95 }}
             >
-              <Github className="h-5 w-5" />
-            </Button>
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              className="rounded-full hover:bg-accent/50 transition-colors border border-accent/20"
-              onClick={() => window.open(socialLinks.linkedin, '_blank')}
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="rounded-full hover:bg-accent/50 transition-colors border border-accent/20 hover:shadow-lg hover:shadow-primary/20 w-10 h-10"
+                onClick={() => window.open(socialLinks.github, '_blank')}
+              >
+                <motion.div
+                  whileHover={{ rotate: 15, scale: 1.1 }}
+                  transition={{ duration: 0.2 }}
+                  className="flex items-center justify-center"
+                >
+                  <Github className="h-5 w-5" />
+                </motion.div>
+              </Button>
+            </motion.div>
+            <motion.div
+              whileHover={buttonHover}
+              whileTap={{ scale: 0.95 }}
             >
-              <Linkedin className="h-5 w-5" />
-            </Button>
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              className="rounded-full hover:bg-accent/50 transition-colors border border-accent/20"
-              onClick={() => window.open(socialLinks.email, '_blank')}
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="rounded-full hover:bg-accent/50 transition-colors border border-accent/20 hover:shadow-lg hover:shadow-primary/20 w-10 h-10"
+                onClick={() => window.open(socialLinks.linkedin, '_blank')}
+              >
+                <motion.div
+                  whileHover={{ rotate: 15, scale: 1.1 }}
+                  transition={{ duration: 0.2 }}
+                  className="flex items-center justify-center"
+                >
+                  <Linkedin className="h-5 w-5" />
+                </motion.div>
+              </Button>
+            </motion.div>
+            <motion.div
+              whileHover={buttonHover}
+              whileTap={{ scale: 0.95 }}
             >
-              <Mail className="h-5 w-5" />
-            </Button>
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="rounded-full hover:bg-accent/50 transition-colors border border-accent/20 hover:shadow-lg hover:shadow-primary/20 w-10 h-10"
+                onClick={() => window.open(socialLinks.email, '_blank')}
+              >
+                <motion.div
+                  whileHover={{ rotate: 15, scale: 1.1 }}
+                  transition={{ duration: 0.2 }}
+                  className="flex items-center justify-center"
+                >
+                  <Mail className="h-5 w-5" />
+                </motion.div>
+              </Button>
+            </motion.div>
           </motion.div>
         </div>
       </footer>
