@@ -18,9 +18,37 @@ import { useTheme } from "@/components/theme-provider";
 import translations from "./locales/es.json";
 import translationsEn from "./locales/en.json";
 
-// Animaciones reutilizables
-const fadeIn = { initial: { opacity: 0, y: 10 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.3 } };
-const staggerContainer = { animate: { transition: { staggerChildren: 0.1 } } };
+// Animaciones mejoradas
+const fadeIn = {
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.5, ease: "easeOut" }
+};
+
+const scaleIn = {
+  initial: { scale: 0.95, opacity: 0 },
+  animate: { scale: 1, opacity: 1 },
+  transition: { duration: 0.3, ease: "easeOut" }
+};
+
+const hoverAnimation = {
+  scale: 1.05,
+  transition: { duration: 0.2 }
+};
+
+const buttonHover = {
+  scale: 1.02,
+  transition: { duration: 0.2 }
+};
+
+const staggerContainer = {
+  animate: {
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.2
+    }
+  }
+};
 
 /**
  * Componente de Modal de Contacto
@@ -228,24 +256,174 @@ export default function App() {
       
       {/* Botones de tema y lenguaje */}
       <div className="fixed top-4 right-4 flex gap-2 z-50">
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={toggleTheme}
-          className="rounded-full theme-transition"
+        <motion.div
+          whileHover={buttonHover}
+          whileTap={{ scale: 0.95 }}
         >
-          {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-        </Button>
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={toggleLanguage}
-          className="rounded-full language-transition"
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={toggleTheme}
+            className="rounded-full theme-transition hover:bg-accent/20 hover:shadow-lg hover:shadow-primary/20"
+          >
+            {theme === 'dark' ? (
+              <motion.div
+                initial={{ rotate: 0 }}
+                animate={{ rotate: 360 }}
+                transition={{ duration: 0.5 }}
+              >
+                <Sun className="h-4 w-4" />
+              </motion.div>
+            ) : (
+              <motion.div
+                initial={{ rotate: 0 }}
+                animate={{ rotate: 360 }}
+                transition={{ duration: 0.5 }}
+              >
+                <Moon className="h-4 w-4" />
+              </motion.div>
+            )}
+          </Button>
+        </motion.div>
+        <motion.div
+          whileHover={buttonHover}
+          whileTap={{ scale: 0.95 }}
         >
-          <Globe className="h-4 w-4" />
-        </Button>
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={toggleLanguage}
+            className="rounded-full language-transition hover:bg-accent/20 hover:shadow-lg hover:shadow-primary/20"
+          >
+            <motion.div
+              whileHover={{ rotate: 15 }}
+              transition={{ duration: 0.2 }}
+            >
+              <Globe className="h-4 w-4" />
+            </motion.div>
+          </Button>
+        </motion.div>
       </div>
 
+      {/* Botones de acción principales */}
+      <motion.div 
+        className="flex justify-center gap-4"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
+      >
+        <motion.div
+          whileHover={buttonHover}
+          whileTap={{ scale: 0.95 }}
+        >
+          <Button 
+            onClick={handleContact} 
+            variant="outline" 
+            size="lg" 
+            className="group border-primary/20 hover:border-primary/40 hover:shadow-lg hover:shadow-primary/20 transition-all duration-300"
+          >
+            <span className="relative">
+              {t.buttons.contact}
+              <motion.span
+                className="absolute right-0"
+                initial={{ x: 0 }}
+                whileHover={{ x: 5 }}
+                transition={{ duration: 0.2 }}
+              >
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </motion.span>
+            </span>
+          </Button>
+        </motion.div>
+        <motion.div
+          whileHover={buttonHover}
+          whileTap={{ scale: 0.95 }}
+        >
+          <Button 
+            onClick={handleDownloadCV}
+            variant="outline" 
+            size="lg" 
+            className="group border-primary/20 hover:border-primary/40 hover:shadow-lg hover:shadow-primary/20 transition-all duration-300"
+          >
+            <span className="relative">
+              {t.buttons.download}
+              <motion.span
+                className="absolute right-0"
+                initial={{ x: 0 }}
+                whileHover={{ x: 5 }}
+                transition={{ duration: 0.2 }}
+              >
+                <ExternalLink className="ml-2 h-4 w-4" />
+              </motion.span>
+            </span>
+          </Button>
+        </motion.div>
+      </motion.div>
+
+      {/* Botones de redes sociales */}
+      <motion.div 
+        className="flex justify-center gap-4"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.3 }}
+      >
+        <motion.div
+          whileHover={buttonHover}
+          whileTap={{ scale: 0.95 }}
+        >
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="rounded-full hover:bg-accent/50 transition-colors border border-accent/20 hover:shadow-lg hover:shadow-primary/20"
+            onClick={() => window.open(socialLinks.github, '_blank')}
+          >
+            <motion.div
+              whileHover={{ rotate: 15 }}
+              transition={{ duration: 0.2 }}
+            >
+              <Github className="h-5 w-5" />
+            </motion.div>
+          </Button>
+        </motion.div>
+        <motion.div
+          whileHover={buttonHover}
+          whileTap={{ scale: 0.95 }}
+        >
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="rounded-full hover:bg-accent/50 transition-colors border border-accent/20 hover:shadow-lg hover:shadow-primary/20"
+            onClick={() => window.open(socialLinks.linkedin, '_blank')}
+          >
+            <motion.div
+              whileHover={{ rotate: 15 }}
+              transition={{ duration: 0.2 }}
+            >
+              <Linkedin className="h-5 w-5" />
+            </motion.div>
+          </Button>
+        </motion.div>
+        <motion.div
+          whileHover={buttonHover}
+          whileTap={{ scale: 0.95 }}
+        >
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="rounded-full hover:bg-accent/50 transition-colors border border-accent/20 hover:shadow-lg hover:shadow-primary/20"
+            onClick={() => window.open(socialLinks.email, '_blank')}
+          >
+            <motion.div
+              whileHover={{ rotate: 15 }}
+              transition={{ duration: 0.2 }}
+            >
+              <Mail className="h-5 w-5" />
+            </motion.div>
+          </Button>
+        </motion.div>
+      </motion.div>
+
+      {/* Modal de Contacto */}
       <ContactModal 
         isOpen={isContactModalOpen} 
         onClose={handleCloseModal} 
